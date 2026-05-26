@@ -1,0 +1,172 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens — Cofounder / The General Intelligence Company.
+
+   The seeded landing reads as the colophon of a fine printed document:
+   warm cream paper, charcoal ink, one olive accent, a pixel-mono display
+   paired with a humanist sans body. The hex values and font tokens track
+   the main app's tokens (--background-l0-100, --foreground-100, --border-10,
+   --caret, --font-departure-mono, --font-figtree) so the surface feels
+   native to GIC's brand system without depending on the app's bundled
+   tokens.
+
+   Dark mode is wired via next-themes — the .dark class on <html> is set
+   by the ThemeProvider in any variant that ships it (currently the
+   product template only). Variants without a ThemeProvider never see the
+   .dark class so the dark palette is dormant.
+
+   Pixelify Sans (Google Fonts, SIL OFL) is loaded via next/font/google in
+   layout.tsx and registered as --font-pixelify-sans. It is an interim
+   pixel-aesthetic display font — a follow-up PR will extend the
+   provisioning service to ship binary template assets and swap this for
+   Departure Mono (by Helena Zhang), which is the main GIC app's actual
+   display font.
+   --------------------------------------------------------------------------- */
+
+/* next-themes toggles a `dark` class on <html>; this custom variant lets the
+   `dark:` utility match descendants of that class. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Surface (light) */
+  --color-bg: #f1f1ee;
+  --color-paper: #fbfbf8;
+  --color-paper-raised: #fefefb;
+
+  /* Ink scale (mirrors --foreground-* in the main app, in 10% increments) */
+  --color-ink: #202020;
+  --color-ink-90: rgba(32, 32, 32, 0.9);
+  --color-ink-80: rgba(32, 32, 32, 0.8);
+  --color-ink-70: rgba(32, 32, 32, 0.7);
+  --color-ink-60: rgba(32, 32, 32, 0.6);
+  --color-ink-50: rgba(32, 32, 32, 0.5);
+  --color-ink-40: rgba(32, 32, 32, 0.4);
+  --color-ink-30: rgba(32, 32, 32, 0.3);
+  --color-ink-20: rgba(32, 32, 32, 0.2);
+  --color-ink-10: rgba(32, 32, 32, 0.1);
+  --color-ink-5: rgba(32, 32, 32, 0.05);
+
+  /* Rules */
+  --color-rule: rgba(32, 32, 32, 0.12);
+  --color-rule-soft: rgba(32, 32, 32, 0.06);
+
+  /* Single accent — caret olive, lifted from the main app's --caret token. */
+  --color-caret: #879e3e;
+
+  /* Type. Pixelify Sans + Figtree both come from next/font/google with
+     CSS variables --font-pixelify-sans and --font-figtree (configured in
+     layout.tsx). A system mono is reserved for inline <code> chips so
+     they still read as code. */
+  --font-display: var(--font-pixelify-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans:
+    var(--font-figtree), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
+
+    /* Dark palette — an inverse of the warm-cream surface. Background goes
+       to a warm dark grey so the page still feels like paper rather than
+       OLED black; ink lifts to a soft warm cream so headlines stay
+       distinctly typeset. Olive accent unchanged (works against both
+       backgrounds). */
+    --color-bg: #1c1c1a;
+    --color-paper: #25252a;
+    --color-paper-raised: #2c2c30;
+
+    --color-ink: #e8e8e3;
+    --color-ink-90: rgba(232, 232, 227, 0.9);
+    --color-ink-80: rgba(232, 232, 227, 0.8);
+    --color-ink-70: rgba(232, 232, 227, 0.7);
+    --color-ink-60: rgba(232, 232, 227, 0.6);
+    --color-ink-50: rgba(232, 232, 227, 0.5);
+    --color-ink-40: rgba(232, 232, 227, 0.4);
+    --color-ink-30: rgba(232, 232, 227, 0.3);
+    --color-ink-20: rgba(232, 232, 227, 0.2);
+    --color-ink-10: rgba(232, 232, 227, 0.1);
+    --color-ink-5: rgba(232, 232, 227, 0.05);
+
+    --color-rule: rgba(232, 232, 227, 0.14);
+    --color-rule-soft: rgba(232, 232, 227, 0.08);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.55;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Graph-paper dot grid — the surface this page is "printed" on. Opacity
+       tuned to read up close, fade at scroll distance. Switches between
+       warm-ink dots on cream and warm-cream dots on dark via the .dark
+       class. */
+    background-image: radial-gradient(circle at 1px 1px, rgba(32, 32, 32, 0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    background-attachment: fixed;
+  }
+
+  .dark body {
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(232, 232, 227, 0.06) 1px,
+      transparent 0
+    );
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  code {
+    font-family: var(--font-mono);
+  }
+}
+
+@layer utilities {
+  /* One choreographed reveal on page load. Restrained. */
+  @keyframes co-rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 14px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  .co-rise {
+    animation: co-rise 0.9s cubic-bezier(0.2, 0.85, 0.3, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .co-rise {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
