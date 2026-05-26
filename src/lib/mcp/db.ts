@@ -14,8 +14,15 @@ import type {
 } from "./types";
 
 function getServiceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // Accept multiple env var names to support Cofounder runtime (GIC_SERVER_SUPABASE_URL)
+  // and standard Next.js .env.local setups.
+  const url =
+    process.env.GIC_SERVER_SUPABASE_URL ??
+    process.env.SUPABASE_URL ??
+    process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ??
+    process.env.GIC_SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error("Supabase env vars not configured");
   return createClient(url, key);
 }

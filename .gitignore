@@ -2,3 +2,5 @@
 node_modules
 out
 bun.lock
+.env.local
+.env*.local
