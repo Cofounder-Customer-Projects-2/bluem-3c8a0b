@@ -134,7 +134,7 @@ export default async function ServersPage({ searchParams }: Props) {
                   </td>
                   <td className="px-4 py-3.5">
                     <span className="font-mono text-xs text-[var(--color-ink-60)]">
-                      {server.transport_type}
+                      {server.transport}
                     </span>
                   </td>
                   <td className="px-4 py-3.5 tabular-nums text-[var(--color-ink-70)]">

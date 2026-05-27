@@ -13,7 +13,7 @@ import type {
   SubmitTaskPayload,
 } from "./types";
 
-function getServiceClient() {
+export function getServiceClient() {
   // Accept multiple env var names to support Cofounder runtime (GIC_SERVER_SUPABASE_URL)
   // and standard Next.js .env.local setups.
   const url =
@@ -95,7 +95,7 @@ export async function registerServer(
       slug: `${slug}-${Math.random().toString(36).slice(2, 6)}`,
       description: payload.description ?? null,
       endpoint_url: payload.endpoint_url ?? null,
-      transport_type: payload.transport_type ?? "http",
+      transport: payload.transport_type ?? "http",
       tags: payload.tags ?? [],
       owner_id: ownerId ?? null,
       status: "pending",

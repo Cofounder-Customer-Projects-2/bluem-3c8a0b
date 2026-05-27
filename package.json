@@ -24,6 +24,7 @@
     "lucide-react": "1.11.0",
     "next": "16.2.6",
     "next-themes": "0.4.6",
+    "pg": "^8.21.0",
     "postmark": "4.0.7",
     "react": "19.2.5",
     "react-dom": "19.2.5",

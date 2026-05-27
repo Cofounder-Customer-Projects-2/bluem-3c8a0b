@@ -14,7 +14,7 @@ export interface McpServer {
   slug: string;
   description: string | null;
   endpoint_url: string | null;
-  transport_type: McpTransportType;
+  transport: McpTransportType;
   status: McpServerStatus;
   tags: string[];
   owner_id: string | null;

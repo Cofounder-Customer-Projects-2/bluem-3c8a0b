@@ -1,0 +1,13 @@
+{
+  "crons": [
+    {
+      "path": "/api/mcp/worker",
+      "schedule": "* * * * *"
+    }
+  ],
+  "functions": {
+    "src/app/api/mcp/worker/route.ts": {
+      "maxDuration": 30
+    }
+  }
+}

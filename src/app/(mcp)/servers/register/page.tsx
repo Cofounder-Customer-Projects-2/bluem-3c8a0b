@@ -21,7 +21,7 @@ export default function RegisterServerPage() {
     name: "",
     description: "",
     endpoint_url: "",
-    transport_type: "stdio" as McpTransportType,
+    transport: "stdio" as McpTransportType,
     tags: "",
   });
 
@@ -38,7 +38,7 @@ export default function RegisterServerPage() {
           name: form.name,
           description: form.description || undefined,
           endpoint_url: form.endpoint_url || undefined,
-          transport_type: form.transport_type,
+          transport: form.transport,
           tags: form.tags
             .split(",")
             .map((t) => t.trim())
@@ -117,9 +117,9 @@ export default function RegisterServerPage() {
               <button
                 key={value}
                 type="button"
-                onClick={() => setForm((f) => ({ ...f, transport_type: value }))}
+                onClick={() => setForm((f) => ({ ...f, transport: value }))}
                 className={`text-left px-3 py-2.5 rounded-lg border transition-colors ${
-                  form.transport_type === value
+                  form.transport === value
                     ? "border-[var(--color-caret)] bg-[var(--color-caret)]/5"
                     : "border-[var(--color-rule)] hover:border-[var(--color-ink-30)]"
                 }`}

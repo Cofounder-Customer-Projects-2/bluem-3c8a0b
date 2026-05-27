@@ -138,7 +138,7 @@ export default async function DashboardPage() {
                       {server.name}
                     </p>
                     <p className="text-xs text-[var(--color-ink-50)] font-mono truncate mt-0.5">
-                      {server.transport_type}
+                      {server.transport}
                     </p>
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">

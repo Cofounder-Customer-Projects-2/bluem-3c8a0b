@@ -49,7 +49,7 @@ export default async function ServerDetailPage({ params }: Props) {
           <div className="flex items-center gap-4 mt-3 text-xs text-[var(--color-ink-50)]">
             <span>
               Transport:{" "}
-              <code className="font-mono text-[var(--color-ink-70)]">{server.transport_type}</code>
+              <code className="font-mono text-[var(--color-ink-70)]">{server.transport}</code>
             </span>
             {server.endpoint_url && (
               <span>
