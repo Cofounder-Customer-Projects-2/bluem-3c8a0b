@@ -18,13 +18,12 @@ export interface WorkerResult {
 
 // ── Task lifecycle helpers ────────────────────────────────────────────────────
 
-async function claimTask(taskId: string, agentId: string): Promise<boolean> {
+async function claimTask(taskId: string): Promise<boolean> {
   const db = getServiceClient();
   const { error } = await db
-    .from("tasks")
+    .from("mcp_tasks")
     .update({
       status: "running",
-      assigned_agent_id: agentId,
       started_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
@@ -43,17 +42,17 @@ async function completeTask(
   const now = new Date().toISOString();
 
   // Insert result row
-  await db.from("task_results").insert({
+  await db.from("mcp_task_results").insert({
     task_id: taskId,
-    output_payload: outputPayload,
-    raw_output: rawOutput,
+    raw_output: outputPayload,      // jsonb column in DB
+    text_content: rawOutput,        // text column in DB
     review_status: "pending",
-    execution_time_ms: executionTimeMs,
+    duration_ms: executionTimeMs,
   });
 
   // Update task status
   await db
-    .from("tasks")
+    .from("mcp_tasks")
     .update({ status: "completed", completed_at: now, updated_at: now })
     .eq("id", taskId);
 }
@@ -69,12 +68,11 @@ async function failTask(
   const shouldRetry = currentRetries < maxRetries;
 
   await db
-    .from("tasks")
+    .from("mcp_tasks")
     .update({
       status: shouldRetry ? "pending" : "failed",
       error_message: errorMessage,
       retry_count: currentRetries + 1,
-      assigned_agent_id: null,
       started_at: null,
       updated_at: now,
     })
@@ -157,7 +155,7 @@ export async function runWorker(): Promise<WorkerResult> {
 
   // Fetch pending tasks ordered by priority desc, then created_at asc
   const { data: tasks, error } = await db
-    .from("tasks")
+    .from("mcp_tasks")
     .select(`
       *,
       server:mcp_servers(id, name, slug, endpoint_url, transport, status, config),
@@ -176,7 +174,7 @@ export async function runWorker(): Promise<WorkerResult> {
     if (Date.now() > deadline) break;
 
     const taskStart = Date.now();
-    const claimed = await claimTask(task.id, agentId);
+    const claimed = await claimTask(task.id);
     if (!claimed) continue; // another worker grabbed it
 
     result.processed++;
@@ -195,7 +193,7 @@ export async function runWorker(): Promise<WorkerResult> {
       const toolResult = await callMcpTool(
         server.transport as "http" | "sse" | "stdio",
         server.endpoint_url,
-        { name: task.tool_name, arguments: task.input_payload ?? {} },
+        { name: (task.tool as { name: string })?.name ?? task.tool_name, arguments: (task as unknown as Record<string, unknown>).input_args as Record<string, unknown> ?? {} },
         (server.config?.timeout_ms as number) ?? 20_000,
       );
 

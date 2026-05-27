@@ -224,10 +224,8 @@ export async function submitTask(
       title: payload.title,
       server_id: payload.server_id,
       tool_id: payload.tool_id,
-      tool_name: payload.tool_name,
-      input_payload: payload.input_payload,
+      input_args: payload.input_payload,
       priority: payload.priority ?? 5,
-      submitted_by: submittedBy ?? null,
       status: "pending",
     })
     .select()
@@ -278,7 +276,7 @@ export async function reviewTaskResult(
     .update({
       review_status: payload.review_status,
       review_notes: payload.review_notes ?? null,
-      reviewed_by: reviewedBy ?? null,
+      reviewer_id: reviewedBy ?? null,
       reviewed_at: new Date().toISOString(),
     })
     .eq("task_id", taskId)
@@ -296,7 +294,7 @@ export async function getDashboardMetrics(): Promise<McpDashboardMetrics> {
   const [servers, tasks, results] = await Promise.all([
     supabase.from("mcp_servers").select("status"),
     supabase.from("mcp_tasks").select("status"),
-    supabase.from("mcp_task_results").select("review_status, execution_time_ms"),
+    supabase.from("mcp_task_results").select("review_status, duration_ms"),
   ]);
 
   const serverRows = servers.data ?? [];
@@ -304,7 +302,7 @@ export async function getDashboardMetrics(): Promise<McpDashboardMetrics> {
   const resultRows = results.data ?? [];
 
   const execTimes = resultRows
-    .map((r) => r.execution_time_ms)
+    .map((r) => r.duration_ms)
     .filter((v): v is number => v !== null);
 
   return {

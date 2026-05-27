@@ -8,7 +8,7 @@ import { generateApiKey } from "@/lib/mcp/auth";
 export async function GET() {
   const db = getServiceClient();
   const { data, error } = await db
-    .from("api_keys")
+    .from("mcp_api_keys")
     .select("id, name, key_prefix, scopes, is_active, last_used_at, expires_at, created_at")
     .order("created_at", { ascending: false });
 
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 
     const db = getServiceClient();
     const { data, error } = await db
-      .from("api_keys")
+      .from("mcp_api_keys")
       .insert({
         name: generated.name,
         key_prefix: generated.keyPrefix,
@@ -75,7 +75,7 @@ export async function DELETE(req: NextRequest) {
 
   const db = getServiceClient();
   const { error } = await db
-    .from("api_keys")
+    .from("mcp_api_keys")
     .update({ is_active: false })
     .eq("id", id);
 

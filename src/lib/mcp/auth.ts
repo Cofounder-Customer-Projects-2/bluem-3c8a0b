@@ -33,7 +33,7 @@ export async function validateApiKey(authHeader: string | null): Promise<AuthRes
 
     // Find active keys matching this prefix
     const { data: keys, error } = await db
-      .from("api_keys")
+      .from("mcp_api_keys")
       .select("id, key_prefix, key_hash, scopes, is_active, expires_at")
       .eq("key_prefix", prefix)
       .eq("is_active", true)
@@ -61,7 +61,7 @@ export async function validateApiKey(authHeader: string | null): Promise<AuthRes
     }
 
     // Update last_used_at asynchronously (don't block response)
-    db.from("api_keys")
+    db.from("mcp_api_keys")
       .update({ last_used_at: new Date().toISOString() })
       .eq("id", match.id)
       .then(() => {});
