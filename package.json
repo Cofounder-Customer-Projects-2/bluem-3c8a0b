@@ -13,7 +13,10 @@
     "test": "bun test --pass-with-no-tests",
     "typecheck": "tsc --noEmit",
     "verify:next-entrypoints": "node scripts/verify-next-entrypoints.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "security:audit": "bun audit --audit-level=high",
+    "squawk": "docker run --rm --platform linux/amd64 -v \"$PWD:/data\" -w /data ghcr.io/sbdchd/squawk:2.55.0",
+    "migration:idempotency": "bun scripts/lint-supabase-migration-idempotency.mjs"
   },
   "dependencies": {
     "@chenglou/pretext": "0.0.6",
